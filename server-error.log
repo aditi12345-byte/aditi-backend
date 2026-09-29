@@ -1,0 +1,2 @@
+[Error] POST /api/auth/register: Could not find the table 'public.users' in the schema cache
+[Error] POST /api/auth/register: Could not find the table 'public.users' in the schema cache
