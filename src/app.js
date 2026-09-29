@@ -13,12 +13,24 @@ const savingsGoalRoutes = require('./routes/savingsGoalRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
 
 const app = express();
+const allowedOrigins = new Set([
+  ...config.CORS_ORIGIN.split(',').map((origin) => origin.trim()).filter(Boolean),
+  // Production frontend hosted on Vercel. Add custom domains through CORS_ORIGIN.
+  'https://aditi-frontend-xi.vercel.app'
+]);
 
 // Security Middlewares
 app.use(helmet());
 app.use(
   cors({
-    origin: config.CORS_ORIGIN,
+    origin(origin, callback) {
+      // Requests without an Origin header include Render health checks and API tools.
+      if (!origin || allowedOrigins.has('*') || allowedOrigins.has(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`Origin '${origin}' is not allowed by CORS.`));
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
   })
