@@ -41,6 +41,16 @@ app.use('/api', apiLimiter);
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 
+// Public deployment check for visitors opening the Render service URL.
+app.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Aditi API is running.',
+    healthCheck: '/api/health',
+    apiBasePath: '/api'
+  });
+});
+
 // Health Check
 app.get('/api/health', (req, res) => {
   res.status(200).json({
